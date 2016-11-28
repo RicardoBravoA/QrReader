@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">QrReader</string>
+    <string name="permission_true">Se concedió permiso de cámara.</string>
+    <string name="permission_false">Se rechazó la solicitud de permiso de cámara.</string>
+    <string name="permission_required">Se necesita el permiso de cámara</string>
+    <string name="on_off">On/Off flash</string>
+</resources>
