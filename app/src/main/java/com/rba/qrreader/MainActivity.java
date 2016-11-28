@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -48,6 +46,9 @@ public class MainActivity extends AppCompatActivity
     private void init() {
 
         qrView = (QRCodeReaderView) findViewById(R.id.qrView);
+
+        qrView.setVisibility(View.VISIBLE);
+
         chkFlash = (CheckBox) findViewById(R.id.chkFlash);
         pointView = (PointsOverlayView) findViewById(R.id.pointView);
 
@@ -84,18 +85,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                                      @NonNull int[] grantResults) {
-        if (requestCode == MY_PERMISSION_REQUEST_CAMERA) {
-            for (int i = 0; i < permissions.length; i++) {
-                if (permissions[i].equals(Manifest.permission.CAMERA)) {
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        Log.i("X-CAMERA ", "X-CAMERA ");
-                        Toast.makeText(this, getString(R.string.permission_true), Toast.LENGTH_SHORT).show();
-                        init();
-                    }
-                }
-            }
+        if (requestCode != MY_PERMISSION_REQUEST_CAMERA) {
+            return;
         }
 
+        if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Snackbar.make(mainLayout, "Camera permission was granted.", Snackbar.LENGTH_SHORT).show();
+            init();
+        } else {
+            Snackbar.make(mainLayout, "Camera permission request was denied.", Snackbar.LENGTH_SHORT)
+                    .show();
+        }
     }
 
     @Override
@@ -115,19 +115,12 @@ public class MainActivity extends AppCompatActivity
                 }
             }).show();
         } else {
-            tryGetPermission();
             Snackbar.make(mainLayout, getString(R.string.permission_required),
                     Snackbar.LENGTH_SHORT).show();
             ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA },
                     MY_PERMISSION_REQUEST_CAMERA);
         }
 
-    }
-
-    public void tryGetPermission() {
-        if (!(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED )) {
-            requestCameraPermission();
-        }
     }
 
 
